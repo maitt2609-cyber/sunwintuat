@@ -1,9 +1,14 @@
 /**
- * server.js — Công Nghệ Vip HUYHOANG 2026
+ * server.js — Công Nghệ Vip PAK 2026
  * Dice Signal Analyzer — Phân loại Cầu Chi tiết
- * Developer: HUY HOANG
+ * Developer: Anh Khôi
  *
  * Nguồn API: https://sunwin-taixiu-dulieu.onrender.com/data
+ *
+ * Lưu ý quan trọng:
+ * - Dữ liệu xúc xắc là ngẫu nhiên độc lập.
+ * - Engine này phân loại nhiều loại cầu + weighted vote + contrarian.
+ * - Không có cam kết thắng tuyệt đối.
  */
 
 'use strict';
@@ -35,10 +40,9 @@ function vnNow() {
 /* ---------- Normalize ---------- */
 function normalizeSide(raw) {
   if (typeof raw !== 'string') return null;
-  const s = raw.trim().toUpperCase()
-    .normalize('NFD').replace(/[\u0300-\u036f]/g, '');
-  if (['TAI', 'T', '1', 'TRUE'].includes(s)) return 'TAI';
-  if (['XIU', 'X', '0', 'FALSE'].includes(s)) return 'XIU';
+  const s = raw.trim().toUpperCase();
+  if (s === 'TÀI' || s === 'TAI') return 'TAI';
+  if (s === 'XỈU' || s === 'XIU') return 'XIU';
   return null;
 }
 
@@ -577,14 +581,14 @@ process.on('unhandledRejection', r => console.error('[UNHANDLED]', r));
 process.on('uncaughtException', e => console.error('[UNCAUGHT]', e));
 
 /* ============================================================
- * UI — GIỮ NGUYÊN 100%
+ * UI HOÀN TOÀN MỚI — 2026 Full Blue
  * ============================================================ */
 const HTML = String.raw`<!DOCTYPE html>
 <html lang="vi">
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>Công Nghệ Vip HOANG 2026</title>
+<title>Công Nghệ Vip PAK 2026</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
@@ -629,7 +633,7 @@ header {
   background: linear-gradient(135deg, #2563eb, #0ea5e9, #22d3ee);
   display: grid; place-items: center;
   font-family: 'JetBrains Mono', monospace;
-  font-weight: 800; font-size: 13px; color: #fff;
+  font-weight: 800; font-size: 15px; color: #fff;
   box-shadow: 0 0 28px rgba(59,130,246,0.5);
 }
 .brand h1 {
@@ -696,4 +700,308 @@ header {
 
 .pred-meta {
   display: flex; gap: 18px; flex-wrap: wrap;
-  font-family: 'JetBrains Mono
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 13px; color: var(--dim); margin-bottom: 14px;
+}
+.pred-meta strong { color: var(--txt); }
+
+.pred-tag {
+  display: inline-block;
+  padding: 6px 13px; border-radius: 8px;
+  background: linear-gradient(135deg, rgba(59,130,246,0.18), rgba(14,165,233,0.1));
+  border: 1px solid rgba(96,165,250,0.32);
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 12px; color: #7dd3fc; margin-bottom: 12px;
+}
+.pred-info {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 12px; color: var(--mute); line-height: 1.7;
+}
+
+.stats { display: grid; grid-template-columns: 1fr 1fr; gap: 11px; }
+.stat {
+  background: var(--card2);
+  border: 1px solid var(--line);
+  border-radius: 14px; padding: 14px;
+}
+.stat-n {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 24px; font-weight: 700;
+}
+.stat-n.ok { color: var(--ok); }
+.stat-n.bad { color: var(--bad); }
+.stat-n.acc { color: #60a5fa; }
+.stat-k {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px; color: var(--mute);
+  letter-spacing: 0.12em; text-transform: uppercase; margin-top: 3px;
+}
+.streak {
+  margin-top: 13px; display: flex; justify-content: space-between;
+  padding: 11px 14px; border-radius: 12px;
+  background: rgba(129,140,248,0.08);
+  border: 1px solid rgba(129,140,248,0.22);
+  font-family: 'JetBrains Mono', monospace; font-size: 13px;
+}
+.streak .v { color: var(--indigo); font-weight: 700; font-size: 15px; }
+.foot {
+  margin-top: 12px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px; color: var(--mute); line-height: 1.6;
+}
+
+.tbl-wrap {
+  overflow-x: auto; border-radius: 14px;
+  border: 1px solid var(--line); background: var(--card2);
+}
+table { width: 100%; border-collapse: collapse; }
+thead th {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px; letter-spacing: 0.12em; text-transform: uppercase;
+  color: #60a5fa; font-weight: 500;
+  text-align: left; padding: 13px 15px;
+  background: rgba(15,23,42,0.7);
+  border-bottom: 1px solid var(--line);
+}
+tbody td {
+  padding: 12px 15px; border-bottom: 1px solid var(--line);
+  font-family: 'JetBrains Mono', monospace; font-size: 12.5px;
+}
+tbody tr:last-child td { border-bottom: none; }
+tbody tr:hover { background: rgba(59,130,246,0.06); }
+.tag {
+  display: inline-block; padding: 3px 9px; border-radius: 6px;
+  font-size: 11.5px; font-weight: 600;
+}
+.tag.tai { color: var(--cyan); background: rgba(34,211,238,0.12); border: 1px solid rgba(34,211,238,0.25); }
+.tag.xiu { color: var(--indigo); background: rgba(129,140,248,0.12); border: 1px solid rgba(129,140,248,0.25); }
+.tag.miss { color: var(--mute); background: rgba(100,116,139,0.15); }
+.r-ok { color: var(--ok); font-weight: 700; }
+.r-bad { color: var(--bad); font-weight: 700; }
+.r-miss { color: var(--mute); }
+.empty {
+  text-align: center; padding: 32px; color: var(--mute);
+  font-family: 'JetBrains Mono', monospace; font-size: 13px;
+}
+
+footer {
+  margin-top: 32px; padding-top: 18px;
+  border-top: 1px solid var(--line);
+  display: flex; justify-content: space-between; flex-wrap: wrap; gap: 10px;
+  font-family: 'JetBrains Mono', monospace; font-size: 12px; color: var(--mute);
+}
+footer strong { color: #7dd3fc; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <div class="brand">
+      <div class="logo">PAK</div>
+      <div>
+        <h1>Công Nghệ Vip PAK</h1>
+        <small>PHÂN LOẠI CẦU CHI TIẾT · 2026</small>
+      </div>
+    </div>
+    <div id="status" class="status"><span class="dot"></span><span id="statusText">Đang kết nối</span></div>
+  </header>
+
+  <div class="grid">
+    <div class="card">
+      <div class="card-title">Dự đoán phiên kế tiếp</div>
+      <div id="pSide" class="pred-side none">--</div>
+      <div class="pred-meta">
+        <span>Độ tin cậy: <strong id="pConf">--%</strong></span>
+        <span>Phiên: <strong id="pPhien">#--</strong></span>
+      </div>
+      <div id="pTag" class="pred-tag">--</div>
+      <div id="pInfo" class="pred-info">Đang chờ dữ liệu...</div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">Thống kê realtime</div>
+      <div class="stats">
+        <div class="stat"><div id="sTotal" class="stat-n">0</div><div class="stat-k">Tổng</div></div>
+        <div class="stat"><div id="sCorrect" class="stat-n ok">0</div><div class="stat-k">Đúng</div></div>
+        <div class="stat"><div id="sWrong" class="stat-n bad">0</div><div class="stat-k">Sai</div></div>
+        <div class="stat"><div id="sAcc" class="stat-n acc">0%</div><div class="stat-k">Tỷ lệ đúng</div></div>
+      </div>
+      <div class="streak">
+        <span style="color:var(--mute)">CHUỖI SAI</span>
+        <span id="sStreak" class="v">0</span>
+      </div>
+      <div class="foot" id="footNote">--</div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">Lịch sử dự đoán</div>
+    <div class="tbl-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Phiên</th><th>Dự đoán</th><th>Thực tế</th><th>Tin cậy</th><th>Cầu / Signal</th><th>Kết quả</th>
+          </tr>
+        </thead>
+        <tbody id="tbody">
+          <tr><td colspan="6" class="empty">Chưa có dữ liệu.</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <footer>
+    <div>Developer: <strong>Anh Khôi</strong> · Công Nghệ Vip PAK 2026</div>
+    <div id="footTime">--</div>
+  </footer>
+</div>
+
+<script>
+const $ = id => document.getElementById(id);
+const set = (id, v) => { const el = $(id); if (el) el.textContent = v == null ? '' : String(v); };
+
+function setSide(el, side) {
+  el.classList.remove('tai', 'xiu', 'none');
+  if (side === 'TAI') { el.classList.add('tai'); el.textContent = 'TÀI'; }
+  else if (side === 'XIU') { el.classList.add('xiu'); el.textContent = 'XỈU'; }
+  else { el.classList.add('none'); el.textContent = '--'; }
+}
+
+function renderLog(rows) {
+  const tb = $('tbody');
+  while (tb.firstChild) tb.removeChild(tb.firstChild);
+  if (!rows || rows.length === 0) {
+    const tr = document.createElement('tr');
+    const td = document.createElement('td');
+    td.colSpan = 6; td.className = 'empty';
+    td.textContent = 'Chưa có phiên nào được chốt.';
+    tr.appendChild(td); tb.appendChild(tr);
+    return;
+  }
+  for (const r of rows) {
+    const tr = document.createElement('tr');
+
+    const td1 = document.createElement('td');
+    td1.textContent = '#' + r.phien;
+    tr.appendChild(td1);
+
+    const td2 = document.createElement('td');
+    const sp = document.createElement('span');
+    sp.className = 'tag ' + (r.predict === 'TAI' ? 'tai' : 'xiu');
+    sp.textContent = r.predict === 'TAI' ? 'TÀI' : 'XỈU';
+    td2.appendChild(sp);
+    tr.appendChild(td2);
+
+    const td3 = document.createElement('td');
+    if (r.actual) {
+      const sa = document.createElement('span');
+      sa.className = 'tag ' + (r.actual === 'TAI' ? 'tai' : 'xiu');
+      sa.textContent = r.actual === 'TAI' ? 'TÀI' : 'XỈU';
+      td3.appendChild(sa);
+    } else {
+      const sa = document.createElement('span');
+      sa.className = 'tag miss';
+      sa.textContent = 'MISS';
+      td3.appendChild(sa);
+    }
+    tr.appendChild(td3);
+
+    const td4 = document.createElement('td');
+    td4.textContent = (r.confidence != null ? r.confidence : '--') + '%';
+    tr.appendChild(td4);
+
+    const td5 = document.createElement('td');
+    td5.textContent = r.tag || '';
+    td5.style.color = 'var(--dim)';
+    td5.style.maxWidth = '240px';
+    td5.style.overflow = 'hidden';
+    td5.style.textOverflow = 'ellipsis';
+    td5.style.whiteSpace = 'nowrap';
+    tr.appendChild(td5);
+
+    const td6 = document.createElement('td');
+    if (r.miss) { td6.className = 'r-miss'; td6.textContent = 'MISS'; }
+    else if (r.correct) { td6.className = 'r-ok'; td6.textContent = 'ĐÚNG'; }
+    else { td6.className = 'r-bad'; td6.textContent = 'SAI'; }
+    tr.appendChild(td6);
+
+    tb.appendChild(tr);
+  }
+}
+
+async function pull() {
+  try {
+    const res = await fetch('/api/dashboard', { cache: 'no-store' });
+    if (!res.ok) throw new Error('HTTP ' + res.status);
+    const d = await res.json();
+
+    if (d.prediction) {
+      setSide($('pSide'), d.prediction.side);
+      set('pConf', d.prediction.confidence + '%');
+      set('pPhien', '#' + d.prediction.phienDuDoan);
+      set('pTag', d.prediction.tag || '--');
+      set('pInfo', d.prediction.info || '');
+    } else {
+      setSide($('pSide'), null);
+      set('pConf', '--%');
+      set('pPhien', '#--');
+      set('pTag', '--');
+      set('pInfo', 'Cần ít nhất 12 phiên dữ liệu để phân tích cầu.');
+    }
+
+    set('sTotal', d.stats.total);
+    set('sCorrect', d.stats.correct);
+    set('sWrong', d.stats.wrong);
+    const acc = d.stats.total > 0 ? ((d.stats.correct / d.stats.total) * 100).toFixed(1) : '0.0';
+    set('sAcc', acc + '%');
+    set('sStreak', d.error_streak);
+
+    set('footNote', 'Fallback: ' + d.stats.fallback_correct + '/' + d.stats.fallback_total + ' · Dữ liệu: ' + d.dataCount + ' phiên');
+    set('footTime', 'Cập nhật: ' + d.lastUpdate);
+
+    renderLog(d.log);
+
+    const st = $('status');
+    st.classList.remove('off');
+    set('statusText', 'Đang hoạt động');
+  } catch (e) {
+    $('status').classList.add('off');
+    set('statusText', 'Mất kết nối');
+    console.error('[UI]', e);
+  }
+}
+
+pull();
+setInterval(pull, 7500);
+</script>
+</body>
+</html>`;
+
+app.get('/', (req, res) => {
+  res.setHeader('Content-Type', 'text/html; charset=utf-8');
+  res.send(HTML);
+});
+
+app.get('/api/dashboard', (req, res) => {
+  res.json({
+    prediction: lastPrediction,
+    stats,
+    log: predictionLog.slice(0, 70),
+    error_streak: engine.errorStreak,
+    lastUpdate: vnNow(),
+    dataCount: lastData.length,
+  });
+});
+
+app.get('/api/raw', (req, res) => {
+  res.json({ data: lastData.slice(0, 80) });
+});
+
+app.listen(PORT, () => {
+  console.log('[PAK] Công Nghệ Vip PAK 2026 — Phân loại Cầu Chi tiết');
+  console.log('[PAK] Server: http://localhost:' + PORT);
+  console.log('[PAK] Developer: Anh Khôi');
+});
+
+fetchAndAnalyze();
+setInterval(fetchAndAnalyze, FETCH_INTERVAL_MS);
