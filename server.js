@@ -1,7 +1,7 @@
 /**
- * server.js — Công Nghệ Vip PAK 2026
+ * server.js — Công Nghệ Vip HOÀNG 2026
  * Dice Signal Analyzer — Phân loại Cầu Chi tiết
- * Developer: Anh Khôi
+ * Developer: HUY HOÀNG
  *
  * Nguồn API: https://sunwin-taixiu-dulieu.onrender.com/data
  *
@@ -588,7 +588,7 @@ const HTML = String.raw`<!DOCTYPE html>
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>Công Nghệ Vip PAK 2026</title>
+<title>Công Nghệ Vip HUY HOÀNG 2026</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
@@ -797,9 +797,9 @@ footer strong { color: #7dd3fc; }
 <div class="wrap">
   <header>
     <div class="brand">
-      <div class="logo">PAK</div>
+      <div class="logo">HOÀNG</div>
       <div>
-        <h1>Công Nghệ Vip PAK</h1>
+        <h1>Công Nghệ Vip HOÀNG</h1>
         <small>PHÂN LOẠI CẦU CHI TIẾT · 2026</small>
       </div>
     </div>
@@ -998,9 +998,9 @@ app.get('/api/raw', (req, res) => {
 });
 
 app.listen(PORT, () => {
-  console.log('[PAK] Công Nghệ Vip PAK 2026 — Phân loại Cầu Chi tiết');
+  console.log('[PAK] Công Nghệ Vip  2026 — Phân loại Cầu Chi tiết');
   console.log('[PAK] Server: http://localhost:' + PORT);
-  console.log('[PAK] Developer: Anh Khôi');
+  console.log('[PAK] Developer: HUYHOANG');
 });
 
 fetchAndAnalyze();
